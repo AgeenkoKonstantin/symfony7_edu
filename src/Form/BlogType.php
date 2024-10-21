@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Blog;
 use App\Entity\Category;
 use App\Form\DataTransformer\TagTransformer;
+use App\Repository\CategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -24,11 +25,25 @@ class BlogType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'required' => true,
+                'help' => 'Заполните заголовок текста',
+                'attr' => [
+                    'class' => 'myclass'
+                ]
             ])
-            ->add('description', TextareaType::class)
-            ->add('text', TextareaType::class)
+            ->add('description', TextareaType::class, [
+                'required' => true,
+            ])
+            ->add('text', TextareaType::class, [
+                'required' => true,
+            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
+                'query_builder' => function (CategoryRepository $categoryRepository) {
+                    return $categoryRepository->createQueryBuilder('p')->orderBy('p.name', 'ASC');
+                },
+                'required' => false,
+                'empty_data' => '',
+                'placeholder' => '-- выбор категории --',
             ])
             ->add('tags', TextType::class, [
                 'label' => 'Теги',
