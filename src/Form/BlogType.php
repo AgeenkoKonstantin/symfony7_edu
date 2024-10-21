@@ -22,14 +22,13 @@ class BlogType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('text', textAreaType::class, ['required' => false])
-            ->add('description')
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
+            ->add('description', TextareaType::class)
+            ->add('text', TextareaType::class)
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'name',
-                'required' => false,
-                'empty_data' => null,
             ])
             ->add('tags', TextType::class, [
                 'label' => 'Теги',
