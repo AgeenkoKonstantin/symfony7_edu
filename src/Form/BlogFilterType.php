@@ -21,26 +21,26 @@ class BlogFilterType extends AbstractType
             ])
             ->add('content', TextType::class, [
                 'mapped' => false,
-            ])
+                'required' => false,
+            ]);
 
-            ->addEventListener(FormEvents::PRE_SUBMIT, function (PreSubmitEvent $event): void {
-                $user = $event->getData();
-                $form = $event->getForm();
-
-                dd($user);
-
-                if (!$user) {
-                    return;
-                }
-
-
-                if (isset($user['showEmail']) && $user['showEmail']) {
-                    $form->add('email', EmailType::class);
-                } else {
-                    unset($user['email']);
-                    $event->setData($user);
-                }
-            });
+//            ->addEventListener(FormEvents::PRE_SUBMIT, function (PreSubmitEvent $event): void {
+//                $user = $event->getData();
+//                $form = $event->getForm();
+//
+//
+//                if (!$user) {
+//                    return;
+//                }
+//
+//
+//                if (isset($user['showEmail']) && $user['showEmail']) {
+//                    $form->add('email', EmailType::class);
+//                } else {
+//                    unset($user['email']);
+//                    $event->setData($user);
+//                }
+//            });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
