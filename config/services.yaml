@@ -22,6 +22,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\ContentWatchApi:
+        $key: '%env(CONTENT_WATCH_API_KEY)%'
+
 
 knp_paginator:
     convert_exception: false            # throw a 404 exception when an invalid page is requested
