@@ -46,7 +46,7 @@ class Blog
 
     //#[Assert\NotBlank]
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?string $percent = null;
+    private ?int $percent = null;
 
     public function __construct(User|UserInterface $user)
     {

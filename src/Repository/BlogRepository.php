@@ -46,6 +46,8 @@ class BlogRepository extends ServiceEntityRepository
                 ->setParameter('title', '%'.$blogFilter->getTitle().'%');
         }
 
+        $blogs->addOrderBy('b.id', 'DESC');
+
         return $blogs;
     }
 
