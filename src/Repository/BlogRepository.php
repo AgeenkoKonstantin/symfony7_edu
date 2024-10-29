@@ -30,7 +30,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findByBlogFilter(BlogFilter $blogFilter)
     {
         $blogs = $this->createQueryBuilder('b')
-            ->leftJoin(User::class, 'u')
+            ->leftJoin('b.user', 'u')
             ->where('1 = 1')
         ;
 
