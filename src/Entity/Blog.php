@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use DateTime;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 class Blog
@@ -44,9 +45,15 @@ class Blog
     #[ORM\ManyToMany(targetEntity: 'App\Entity\Tag', cascade: ['persist'])]
     private ArrayCollection|PersistentCollection $tags;
 
-    //#[Assert\NotBlank]
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $percent = null;
+
+    #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING,options: ['default' => 'pending'])]
+    private ?string $status = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, options: ['default' => null])]
+    private ?DateTime $blockedAt;
 
     public function __construct(User|UserInterface $user)
     {
@@ -142,6 +149,30 @@ class Blog
     public function setPercent(?string $percent): static
     {
         $this->percent = $percent;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getBlockedAt(): ?DateTime
+    {
+        return $this->blockedAt;
+    }
+
+    public function setBlockedAt(?DateTime $blockedAt): static
+    {
+        $this->blockedAt = $blockedAt;
 
         return $this;
     }
