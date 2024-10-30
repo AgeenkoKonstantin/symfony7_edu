@@ -7,11 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use DateTime;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Blog
 {
     #[ORM\Id]
@@ -52,12 +54,21 @@ class Blog
     #[ORM\Column(type: Types::STRING,options: ['default' => 'pending'])]
     private ?string $status = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, options: ['default' => null])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => null])]
     private ?DateTime $blockedAt;
 
     public function __construct(User|UserInterface $user)
     {
         $this->user = $user;
+    }
+
+    #[NoReturn]
+    #[ORM\PreUpdate]
+    public function setBlockedAtValue(): void
+    {
+        if($this->status == 'blocked' && !$this->blockedAt){
+            $this->blockedAt = new DateTime();
+        }
     }
 
     public function addTag(Tag $tag): void
