@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,6 +17,8 @@ use DateTime;
 #[ORM\HasLifecycleCallbacks]
 class Blog
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -51,11 +54,11 @@ class Blog
     private ?int $percent = null;
 
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::STRING,options: ['default' => 'pending'])]
-    private ?string $status = null;
+    #[ORM\Column(type: Types::STRING, nullable: true, options: ['default' => 'pending'])]
+    private ?string $status = 'pending';
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => null])]
-    private ?DateTime $blockedAt;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => null])]
+    private ?DateTime $blockedAt = null;
 
     public function __construct(User|UserInterface $user)
     {
