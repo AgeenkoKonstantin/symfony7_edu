@@ -24,7 +24,9 @@ class BlogRepository extends ServiceEntityRepository
      */
     public function getBlogs(): array
     {
-        return $this->createQueryBuilder('b')
+        return $this
+            ->createQueryBuilder('b')
+            ->OrderBy('b.id', 'DESC')
             ->setMaxResults(6)
             ->getQuery()
             ->getResult();
@@ -53,6 +55,11 @@ class BlogRepository extends ServiceEntityRepository
         $blogs->addOrderBy('b.id', 'DESC');
 
         return $blogs;
+    }
+
+    public function getByTitle(string $title): Blog
+    {
+        return $this->findOneBy(['title' => $title]);
     }
 
 }
