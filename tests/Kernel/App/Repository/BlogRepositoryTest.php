@@ -12,7 +12,7 @@ class BlogRepositoryTest extends KernelTestCaseUnit
 
     public function testSomething(): void
     {
-        $kernel = self::bootKernel();
+        self::bootKernel();
 
         $user = UserFactory::createOne();
 

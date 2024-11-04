@@ -57,7 +57,7 @@ class BlogRepository extends ServiceEntityRepository
         return $blogs;
     }
 
-    public function getByTitle(string $title): Blog
+    public function getByTitle(string $title): ?Blog
     {
         return $this->findOneBy(['title' => $title]);
     }

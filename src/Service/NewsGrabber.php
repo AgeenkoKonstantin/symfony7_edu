@@ -20,6 +20,7 @@ class NewsGrabber
         private readonly EntityManagerInterface $entityManager,
         private readonly BlogRepository $blogRepository,
         private readonly ParameterBagInterface $parameterBag,
+        private readonly HttpClient $httpClient,
     ) {
     }
 
@@ -27,24 +28,17 @@ class NewsGrabber
      * @param int|null $count
      * @param bool|null $dryRun
      * @return void
-     * @throws GuzzleException
      */
-    public function importNews(?int $count, ?bool $dryRun): void
+    public function importNews(?int $count = null, ?bool $dryRun = false): void
     {
         $this->logger->notice("Importing news...");
-        $client = new Client([
-            'timeout'  => 15.0,
-            'verify'   => false,
-        ]);
-
-        $response = $client->get('https://www.engadget.com/news/');
 
         $parsedNews = [];
 
-        $crawler = new Crawler($response->getBody()->getContents());
+        $crawler = new Crawler($this->httpClient->get('https://www.engadget.com/news/'));
         $crawler->filter('h4.My\(0\) > a')->each(function (Crawler $crawler) use (&$parsedNews, $count) {
 
-            if(count($parsedNews) >= $count) {
+            if( $count && count($parsedNews) >= $count) {
                 return;
             }
 
@@ -57,8 +51,7 @@ class NewsGrabber
         $this->logger->info(sprintf('Get %d news', count($parsedNews)));
 
         foreach ($parsedNews as &$item) {
-            $response = $client->get('https://www.engadget.com' . $item['href']);
-            $crawler = new Crawler($response->getBody()->getContents());
+            $crawler = new Crawler($this->httpClient->get('https://www.engadget.com' . $item['href']));
             $crawlerBody = $crawler->filter('div.caas-body')->first();
             $item['text'] = $crawlerBody->text();
 
@@ -66,12 +59,11 @@ class NewsGrabber
         }
         unset($item);
 
-        if(!$dryRun) {
-            $this->saveNews($parsedNews);
-        }
+
+        $this->saveNews($parsedNews, $dryRun);
     }
 
-    private function saveNews(array $parsedNews): void
+    private function saveNews(array $parsedNews, bool $dryRun): void
     {
         $this->logger->notice("Save news");
 
@@ -79,6 +71,10 @@ class NewsGrabber
 
         if(!$blogUser) {
             $this->logger->error(sprintf('User %d not found', $this->parameterBag->get('autoblog')));
+            return;
+        }
+
+        if($dryRun) {
             return;
         }
 
