@@ -35,11 +35,17 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ path('app_user_index') }}">Users</a>
           </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_blog_index') }}">Blogs</a>
+            </li>
           {% endif %}
           {% if app.user %}
           <li class="nav-item">
             <a class="nav-link" href="{{ path('_logout_main') }}">Logout</a>
           </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_user_blog_index') }}">Blogs</a>
+            </li>
           {% endif %}
           {% if app.user is null %}
           <li class="nav-item">
